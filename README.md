@@ -1,6 +1,6 @@
 # Chrome Extensions
 
-Some quick examples to explore the basic concepts of Chrome extension development.
+4 quick examples to explore the basic concepts of Chrome extension development.
 
 | #   | Project                                     | Description                                                                                         |
 | --- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
