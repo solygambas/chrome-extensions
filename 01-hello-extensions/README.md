@@ -1,6 +1,10 @@
 # Hello Extensions
 
-Displays "Hello Extensions" when the user clicks on the extension toolbar icon.
+A basic extension displaying "Hello Extensions" when the user clicks on the extension toolbar icon.
+
+<p align="center">
+    <img src="screenshot.png">
+</p>
 
 ## Features
 
