@@ -7,7 +7,7 @@ const BASIC_SELECTORS = [
 ].join(",");
 
 // Function to remove the first type of ads (right sidebar)
-function removeFirstTypeAds() {
+function removeSidebarAds() {
   // First pass: Remove elements matching basic selectors
   document.querySelectorAll(BASIC_SELECTORS).forEach((el) => {
     const adContainer = el.closest('div[class*="_"]');
@@ -52,27 +52,74 @@ function removeFirstTypeAds() {
 }
 
 // Function to remove the second type of ads
-function removeSecondTypeAds() {
-  const secondTypeAds = document.querySelectorAll("video[autoplay]");
-  secondTypeAds.forEach((video) => {
-    // Optionally check for specific keywords in the src
-    if (video.src.includes("promo")) {
-      video.remove();
-    }
+function removeOverlays() {
+  // Target overlays by ID and class
+  const overlays = document.querySelectorAll("#overlays, .fs-unmask");
+  overlays.forEach((overlay) => {
+    overlay.remove();
+  });
+
+  // Also remove any elements with focus-guard or focus-lock
+  const focusElements = document.querySelectorAll(
+    "[data-focus-guard], [data-focus-lock-disabled]"
+  );
+  focusElements.forEach((element) => {
+    element.remove();
+  });
+}
+
+function findParentModal(element) {
+  // Walk up to find closest dialog or modal-like container
+  const parent = element.closest(
+    '[role="dialog"], [aria-modal="true"], [data-test*="modal"], [data-test*="purchase"]'
+  );
+  return parent;
+}
+
+function removeModalAds() {
+  // Target elements by data attributes and roles
+  const selectors = [
+    '[data-test*="purchase"]',
+    '[data-test*="paywall"]',
+    '[data-test*="subscription"]',
+    '[role="dialog"]',
+    '[aria-modal="true"]',
+  ];
+
+  // Text patterns that indicate ads
+  const adPatterns = [
+    /super/i,
+    /subscribe/i,
+    /premium/i,
+    /try for/i,
+    /no thanks/i,
+  ];
+
+  selectors.forEach((selector) => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((element) => {
+      const text = element.textContent.toLowerCase();
+      if (adPatterns.some((pattern) => pattern.test(text))) {
+        const modal = findParentModal(element);
+        if (modal) modal.remove();
+      }
+    });
   });
 }
 
 // Observe and handle dynamically loaded content
 function observeDOMChanges() {
   const observer = new MutationObserver(() => {
-    removeFirstTypeAds();
-    removeSecondTypeAds();
+    removeSidebarAds();
+    removeOverlays();
+    removeModalAds();
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
 // Initial cleanup and start observing
-removeFirstTypeAds();
-removeSecondTypeAds();
+removeSidebarAds();
+removeOverlays();
+removeModalAds();
 observeDOMChanges();
