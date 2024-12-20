@@ -51,23 +51,6 @@ function removeSidebarAds() {
   }
 }
 
-// Function to remove the second type of ads
-function removeOverlays() {
-  // Target overlays by ID and class
-  const overlays = document.querySelectorAll("#overlays, .fs-unmask");
-  overlays.forEach((overlay) => {
-    overlay.remove();
-  });
-
-  // Also remove any elements with focus-guard or focus-lock
-  const focusElements = document.querySelectorAll(
-    "[data-focus-guard], [data-focus-lock-disabled]"
-  );
-  focusElements.forEach((element) => {
-    element.remove();
-  });
-}
-
 function findParentModal(element) {
   // Walk up to find closest dialog or modal-like container
   const parent = element.closest(
@@ -120,6 +103,5 @@ function observeDOMChanges() {
 
 // Initial cleanup and start observing
 removeSidebarAds();
-removeOverlays();
 removeModalAds();
 observeDOMChanges();
