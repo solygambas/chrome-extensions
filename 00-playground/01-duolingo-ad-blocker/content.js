@@ -90,12 +90,31 @@ function removeModalAds() {
   });
 }
 
+function removeVideoAds() {
+  const secondTypeAds = document.querySelectorAll("video[autoplay]");
+  secondTypeAds.forEach((video) => {
+    // Optionally check for specific keywords in the src
+    if (video.src.includes("promo")) {
+      video.remove();
+    }
+  });
+}
+
+function removeOverlays() {
+  const overlays = document.querySelector("#overlays");
+  if (overlays) {
+    overlays.innerHTML = "";
+    overlays.style.display = "none";
+  }
+}
+
 // Observe and handle dynamically loaded content
 function observeDOMChanges() {
   const observer = new MutationObserver(() => {
     removeSidebarAds();
-    removeOverlays();
     removeModalAds();
+    removeVideoAds();
+    removeOverlays();
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
@@ -103,5 +122,4 @@ function observeDOMChanges() {
 
 // Initial cleanup and start observing
 removeSidebarAds();
-removeModalAds();
 observeDOMChanges();
