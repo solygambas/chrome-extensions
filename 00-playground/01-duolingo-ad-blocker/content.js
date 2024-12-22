@@ -51,6 +51,7 @@ function removeSidebarAds() {
   }
 }
 
+// Cache default values
 const FUTURE_DATE = Date.now() + 365 * 24 * 60 * 60 * 1000; // 1 year in future
 const DEFAULT_AD_VALUE = {
   lastSessionCount: 999999,
@@ -59,6 +60,7 @@ const DEFAULT_AD_VALUE = {
   subtypesShown: [],
 };
 
+// Clear ad storage for internal ads at session end
 const AD_KEYS = [
   "duo.internalAds.sessionEnd.plus",
   "duo.internalAds.sessionEnd.superVideo",
