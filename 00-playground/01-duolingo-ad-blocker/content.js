@@ -51,70 +51,31 @@ function removeSidebarAds() {
   }
 }
 
-function findParentModal(element) {
-  // Walk up to find closest dialog or modal-like container
-  const parent = element.closest(
-    '[role="dialog"], [aria-modal="true"], [data-test*="modal"], [data-test*="purchase"]'
-  );
-  return parent;
-}
+const FUTURE_DATE = Date.now() + 365 * 24 * 60 * 60 * 1000; // 1 year in future
+const DEFAULT_AD_VALUE = {
+  lastSessionCount: 999999,
+  lastShowTimestamp: FUTURE_DATE,
+  showCount: 999999,
+  subtypesShown: [],
+};
 
-function removeModalAds() {
-  // Target elements by data attributes and roles
-  const selectors = [
-    '[data-test*="purchase"]',
-    '[data-test*="paywall"]',
-    '[data-test*="subscription"]',
-    '[role="dialog"]',
-    '[aria-modal="true"]',
-  ];
+const AD_KEYS = [
+  "duo.internalAds.sessionEnd.plus",
+  "duo.internalAds.sessionEnd.superVideo",
+  "duo.internalAds.sessionEnd.practiceHubPromo",
+];
 
-  // Text patterns that indicate ads
-  const adPatterns = [
-    /super/i,
-    /subscribe/i,
-    /premium/i,
-    /try for/i,
-    /no thanks/i,
-  ];
-
-  selectors.forEach((selector) => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach((element) => {
-      const text = element.textContent.toLowerCase();
-      if (adPatterns.some((pattern) => pattern.test(text))) {
-        const modal = findParentModal(element);
-        if (modal) modal.remove();
-      }
-    });
+function clearAdStorage() {
+  AD_KEYS.forEach((key) => {
+    localStorage.setItem(key, JSON.stringify(DEFAULT_AD_VALUE));
   });
-}
-
-function removeVideoAds() {
-  const secondTypeAds = document.querySelectorAll("video[autoplay]");
-  secondTypeAds.forEach((video) => {
-    // Optionally check for specific keywords in the src
-    if (video.src.includes("promo")) {
-      video.remove();
-    }
-  });
-}
-
-function removeOverlays() {
-  const overlays = document.querySelector("#overlays");
-  if (overlays) {
-    overlays.innerHTML = "";
-    overlays.style.display = "none";
-  }
 }
 
 // Observe and handle dynamically loaded content
 function observeDOMChanges() {
   const observer = new MutationObserver(() => {
     removeSidebarAds();
-    removeModalAds();
-    removeVideoAds();
-    removeOverlays();
+    clearAdStorage();
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
@@ -122,4 +83,5 @@ function observeDOMChanges() {
 
 // Initial cleanup and start observing
 removeSidebarAds();
+clearAdStorage();
 observeDOMChanges();
